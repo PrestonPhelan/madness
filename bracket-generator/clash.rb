@@ -8,8 +8,6 @@ class Clash
       cells = row.split(",")
       clashes << Clash.new(*cells)
     end
-    puts clashes
-
     clashes
   end
 

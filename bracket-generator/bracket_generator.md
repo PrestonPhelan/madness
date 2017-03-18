@@ -34,3 +34,6 @@ until reach a conflict that cannot be avoided.  Then fill in by seed ranking.
 
 ### Generator
 * Assign locations automatically
+
+### Other
+* NIT

@@ -9,13 +9,13 @@
 
 ### Pods
 Possible matchups.  Checking for clashes within pod.
-  - [ ] Tracks number of viable Combinations that include this pod
-  - [ ] Tracks number of viable pods next level up that include this pod
-  - [ ] First round is composed of team matchups, other rounds are pod matchups
-  - [ ] Defined by favorite
+  - [x] Tracks number of viable Combinations that include this pod
+  - [x] Tracks number of viable pods next level up that include this pod
+  - [x] First round is composed of team matchups, other rounds are pod matchups
+  - [x] Defined by favorite
 
 ### Combinations
-Combination of pods that make of the four regions.  Possible combinations without repeating teams.
+Combination of pods that make of the four regions.  Possible combinations without repeating teams.  Built from that round's pods
   - [ ] Tracks number of viable combinations next level up that include this combination
 
 
@@ -28,7 +28,9 @@ Combination of pods that make of the four regions.  Possible combinations withou
 ### Iterate through matchups in order of probability
   - [ ] If first of round
     - [ ] Generate all possible pod matchups, minus clashes
+      - [ ] Add to appropriate trackers
     - [ ] Generate combinations from possible pods
+      - [ ] Add to appropriate trackers
 
   - [ ] Else
     - [ ] Find a combination with no clashes.  If it exists, limit has not been found.
