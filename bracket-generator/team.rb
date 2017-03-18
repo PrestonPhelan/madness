@@ -7,7 +7,7 @@ class Team
     f.each_line do |row|
       cells = row.split(",")
       break if cells[0].to_i >= 49
-      teams[cells[1]] += [Team.new(*cells)]
+      teams[cells[1].to_i] += [Team.new(*cells)]
     end
 
     teams
