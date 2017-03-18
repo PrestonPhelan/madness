@@ -9,14 +9,14 @@
 
 ### Pods
 Possible matchups.  Checking for clashes within pod.
-  - [x] Tracks number of viable Combinations that include this pod
+  - [ ] Tracks a viable Combination that includes this pod
   - [x] Tracks number of viable pods next level up that include this pod
   - [x] First round is composed of team matchups, other rounds are pod matchups
   - [x] Defined by favorite
 
 ### Combinations
 Combination of pods that make of the four regions.  Possible combinations without repeating teams.  Built from that round's pods
-  - [ ] Tracks number of viable combinations next level up that include this combination
+  - [x] Built
 
 
 ## Algorithm

@@ -8,7 +8,7 @@ class Pod
     @lower = lower
     @round = round
 
-    @combinations = 0
+    @combination = nil
     @super_pods = 0
 
     @favorite_team = @upper.is_a?(Team) ? @upper : @upper.favorite_team
