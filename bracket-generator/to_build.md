@@ -22,6 +22,7 @@ Combination of pods that make of the four regions.  Possible combinations withou
 ## Algorithm
 ### First Setup
   * Create team objects
+  * Remove low rank-single bids
   * 12-seed Play-in Pods
 
 ### Iterate through matchups in order of probability

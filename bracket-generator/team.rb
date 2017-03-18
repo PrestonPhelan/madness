@@ -18,5 +18,4 @@ class Team
     @name = params[2]
     @conference = params[3].strip
   end
-
 end
