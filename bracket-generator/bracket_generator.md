@@ -30,3 +30,7 @@ until reach a conflict that cannot be avoided.  Then fill in by seed ranking.
 # Future Features
 ### Ranking
 * Pull in data automatically from Massey composite.
+* Own Strength of Record metric
+
+### Generator
+* Assign locations automatically

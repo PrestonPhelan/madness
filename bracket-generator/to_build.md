@@ -1,45 +1,45 @@
 ## Setup
 ### Create Table from CSV Import
-  * Object Class
-    * Hold name, seed, overall, conference
+  - [x] Object Class
+    - [x] Hold name, seed, overall, conference
 
 ### Create Seed-Clash Object
-  * Read from CSV table
-  * "Clash" object
+  - [x] Read from CSV table
+  - [x] "Clash" object
 
 ### Pods
 Possible matchups.  Checking for clashes within pod.
-  * Tracks number of viable Combinations that include this pod
-  * Tracks number of viable pods next level up that include this pod
-  * First round is composed of team matchups, other rounds are pod matchups
-  * Defined by favorite
+  - [ ] Tracks number of viable Combinations that include this pod
+  - [ ] Tracks number of viable pods next level up that include this pod
+  - [ ] First round is composed of team matchups, other rounds are pod matchups
+  - [ ] Defined by favorite
 
 ### Combinations
 Combination of pods that make of the four regions.  Possible combinations without repeating teams.
-  * Tracks number of viable combinations next level up that include this combination
+  - [ ] Tracks number of viable combinations next level up that include this combination
 
 
 ## Algorithm
 ### First Setup
-  * Create team objects
-  * Remove low rank-single bids
-  * 12-seed Play-in Pods
+  - [ ] Create team objects
+  - [ ] Remove low rank-single bids
+  - [ ] 12-seed Play-in Pods
 
 ### Iterate through matchups in order of probability
-  * If first of round
-    * Generate all possible pod matchups, minus clashes
-    * Generate combinations from possible pods
+  - [ ] If first of round
+    - [ ] Generate all possible pod matchups, minus clashes
+    - [ ] Generate combinations from possible pods
 
-  * Else
-    * Find a combination with no clashes.  If it exists, limit has not been found.
-      * Find clashes, remove all pods
-      * At each removal, find all higher level pods and remove those. Track those pods
-      * Remove combinations that include removed pods
-        * Start at lowest level, move up
-    * If not, Limit has been found, break
+  - [ ] Else
+    - [ ] Find a combination with no clashes.  If it exists, limit has not been found.
+      - [ ] Find clashes, remove all pods
+      - [ ] At each removal, find all higher level pods and remove those. Track those pods
+      - [ ] Remove combinations that include removed pods
+        - [ ] Start at lowest level, move up
+    - [ ] If not, Limit has been found, break
 
 ### After Limit Is Found
-  * Move from number 1 overall seed down
-  * Find pod that has the lowest-seeded favorites
-  * Reduce to combinations that only include those pods.
-  * Continue until only one overall combination remains.
+  - [ ] Move from number 1 overall seed down
+  - [ ] Find pod that has the lowest-seeded favorites
+  - [ ] Reduce to combinations that only include those pods.
+  - [ ] Continue until only one overall combination remains.
