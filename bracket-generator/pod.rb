@@ -2,7 +2,7 @@ class Pod
   attr_reader :upper, :lower, :round, :favorite_team, :favorite_round
   attr_accessor :combinations, :super_pods
 
-  def initialize
+  def initialize(upper, lower, round)
     # TODO Solve super_pods & combinations == 0 check issues
     @upper = upper
     @lower = lower
