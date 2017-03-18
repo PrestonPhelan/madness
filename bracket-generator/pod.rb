@@ -17,11 +17,25 @@ class Pod
     @teams = get_teams
   end
 
+  def ensure_combination
+    @combination ||= find_combination
+  end
+
+  def find_combination
+    # Code to return a combination that includes this pod
+  end
+
   def get_teams
-    if @round == 1
-      hash = {}
+    hash = {}
+    if @round == 0
+      hash[12] = [@upper, @lower]
+    elsif @round == 1
       hash[@favorite_seed] = @upper
-      hash[17 - @favorite_seed] = @lower
+      if @favorite_seed == 5
+        hash[12] = @lower.teams
+      else
+        hash[17 - @favorite_seed] = @lower
+      end
     elsif @round < 5
       @upper.teams.merge(@lower.teams)
     else

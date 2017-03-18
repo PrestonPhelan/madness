@@ -9,7 +9,7 @@
 
 ### Pods
 Possible matchups.  Checking for clashes within pod.
-  - [ ] Tracks a viable Combination that includes this pod
+  - [x] Tracks a viable Combination that includes this pod
   - [x] Tracks number of viable pods next level up that include this pod
   - [x] First round is composed of team matchups, other rounds are pod matchups
   - [x] Defined by favorite
@@ -21,8 +21,8 @@ Combination of pods that make of the four regions.  Possible combinations withou
 
 ## Algorithm
 ### First Setup
-  - [ ] Create team objects
-  - [ ] Remove low rank-single bids
+  - [x] Create team objects
+    - [x] Skip low rank-single bids
   - [ ] 12-seed Play-in Pods
 
 ### Iterate through matchups in order of probability

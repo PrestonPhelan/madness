@@ -6,6 +6,7 @@ class Team
     f = File.open(filename)
     f.each_line do |row|
       cells = row.split(",")
+      break if cells[0].to_i >= 49
       teams[cells[1]] += [Team.new(*cells)]
     end
 
