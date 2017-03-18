@@ -18,4 +18,8 @@ class Team
     @name = params[2]
     @conference = params[3].strip
   end
+
+  def to_s
+    "#{@seed} #{@name} (#{@overall}), #{@conference}"
+  end
 end
