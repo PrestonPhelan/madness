@@ -12,6 +12,13 @@ class Set
   end
 end
 
+def conflict?(pod1, pod2, clash_map, fav)
+  clash_map[fav].each do |ud|
+    return true if pod2.teams[ud].any? { |ud_team| ud_team.conference == pod1.teams[fav].first.conference }
+  end
+  false
+end
+
 def generate_clash_map(clashes)
   result = Hash.new { |h, k| h[k] = Set.new }
   clashes.each do |clash|
@@ -82,10 +89,40 @@ def generate_r1_pods(teams, pods)
 end
 
 def generate_rn_pods(pods, round, clashes)
+  result = Hash.new
   clash_map = generate_clash_map(clashes)
-  byebug
+  target_sum = (2**(5-round)) + 1
+
+  ## Get cross-products
+  1.upto(target_sum / 2) do |i|
+    opp = target_sum - i
+    result[i] = get_cross_products(pods, i, opp, clash_map, round)
+  end
+
+  result
 end
 
 def generate_r5_pods(pods)
 
+end
+
+def get_cross_products(pods, fav, ud, clash_map, round)
+  result = Hash.new { |h, k| h[k] = Set.new }
+  clash_check = clash_map.keys.include?(fav)
+  pods[fav].each_key do |fav_team|
+    pods[fav][fav_team].each do |pod1|
+      pods[ud].each_key do |fav_team2|
+        pods[ud][fav_team2].each do |pod2|
+          if clash_check && conflict?(pod1, pod2, clash_map, fav)
+            puts "Skipping #{pod1}, #{pod2}"
+            next
+          else
+          # puts "Adding in #{pod1}, #{pod2} to #{fav_team}"
+          result[fav_team] << Pod.new(pod1, pod2, round)
+          end
+        end
+      end
+    end
+  end
+  result
 end

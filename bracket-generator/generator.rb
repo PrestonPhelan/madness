@@ -96,8 +96,9 @@ until limit_reached && p_limit_reached
       pods = generate_r5_pods(pods)
     else
       pods = generate_rn_pods(pods, highest_round + 1, clashes_to_check)
+      print_counts(pods)
     end
-    pods = generate_pods(pods, highest_round + 1, clashes_to_check)
+    byebug
 
     ## Special case, pods for national semifinals
     if highest_round == 4
