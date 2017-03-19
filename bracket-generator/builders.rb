@@ -8,7 +8,10 @@ def generate_playin_pods(teams)
     fav_team = teams[12][i]
     result[12][fav_team] = []
     (i + 1).upto(3) do |j|
-      result[12][fav_team] << Pod.new(fav_team, teams[12][j], 0)
+      underdog_team = teams[12][j]
+      unless fav_team.conference == underdog_team.conference
+        result[12][fav_team] << Pod.new(fav_team, underdog_team, 0)
+      end
     end
   end
 

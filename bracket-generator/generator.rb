@@ -1,6 +1,8 @@
 require_relative './team.rb'
 require_relative './clash.rb'
 require_relative './pod.rb'
+require_relative './builders.rb'
+require_relative './util.rb'
 require 'byebug'
 
 class Hash
@@ -25,12 +27,12 @@ clashes = Clash.add_all('./matchup_rate.csv')
 ### PHASE 2 - INITIAL SETUP ###
 # Pods variable a hash, keyed by favorite_seed, sub-keys favorite team
 # pods[top_seed][fav_team]
+
+# Initially set to the group of play-in pods
 pods = generate_playin_pods(teams)
+print_counts(pods)
 
-# Build 12-seed pods
-pods[12] = Hash.new
-
-
+# byebug
 
 
 ### PHASE 3 - ITERATE THROUGH CLASHES ###
