@@ -32,3 +32,6 @@ Seed quota methods try to match the amount of upsets that we expect to see in a 
   * Forward vs. Backward
 
   Remember, when moving backward, use conditional probabilities.
+
+## Probability Quotas
+Look at this year's probabilites of advancing by round.  Choose X number from top to bottom or bottom to top

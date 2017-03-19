@@ -26,14 +26,17 @@ clashes = Clash.add_all('./matchup_rate.csv')
 
 ### PHASE 2 - INITIAL SETUP ###
 # Pods variable a hash, keyed by favorite_seed, sub-keys favorite team
-# pods[top_seed][fav_team]
+# pods[top_seed][fav_team] => Set of pods
 
 # Initially set to the group of play-in pods
 pods = generate_playin_pods(teams)
 print_counts(pods)
 
-# byebug
+# Generate first round pods
+pods = generate_r1_pods(teams, pods)
+print_counts(pods)
 
+byebug
 
 ### PHASE 3 - ITERATE THROUGH CLASHES ###
 ## Initialize iteration variables
@@ -60,8 +63,6 @@ until limit_reached
 
   ## Check if pushing up highest_round
   if clash.round > highest_round
-
-    ## If so, Generate pods
     pods = generate_pods(pods, highest_round + 1)
     if highest_round == 0
       pods[1] = Hash.new
@@ -87,9 +88,9 @@ until limit_reached
         pods[1][5][team] << Pod.new(team, nil, 1)
       end
 
-      pods[1][5].each_key do |team|
-        puts pods[1][5][team]
-      end
+      # pods[1][5].each_key do |team|
+      #   puts pods[1][5][team]
+      # end
 
       6.upto(8) do |i|
         teams[i].each do |team1|
