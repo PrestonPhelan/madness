@@ -44,6 +44,8 @@ end
 highest_round = 0
 limit_reached = false
 combinations_in_use = []
+orphans = []
+combinations_to_remove = []
 
 # until limit_reached
 4.times do
@@ -53,7 +55,9 @@ combinations_in_use = []
 
   ## Check if pushing up highest_round
   if clash.round > highest_round
-    ## Generate pods
+
+    ## If so, Generate pods
+
     if highest_round == 0
       pods[1] = Hash.new
       1.upto(8) do |i|
@@ -88,6 +92,8 @@ combinations_in_use = []
           end
         end
       end
+
+    ## Special case, pods for national semifinals
     elsif highest_round == 4
       pods[5] = Hash.new
       pods[5][1] = Hash.new
@@ -105,9 +111,12 @@ combinations_in_use = []
           end
         end
       end
+
+    ## Normal case
     else
       top_seeds = pods[highest_round].size / 2
       this_round = highest_round + 1
+      puts "Building pods for round #{this_round}"
       pods[this_round] = Hash.new
       1.upto(top_seeds) do |top_seed|
         # Generate pods for top_seed, which is combination of top_seed team
@@ -129,6 +138,8 @@ combinations_in_use = []
         end
       end
     end
+
+    ## Reset all combinations in pods to nil
     0.upto(highest_round) do |round|
       pods[round].each_key do |k1|
         pods[round][k1].each_key do |k2|
@@ -139,7 +150,44 @@ combinations_in_use = []
       end
     end
     combinations_in_use = []
+
+    ## Advance highest roud
     highest_round += 1
+
+    ## Generate new combinations
+    if highest_round >= 2
+      highest_round.downto(1) do |round|
+        pods[round].each_key do |top_seed|
+          pods[round][top_seed].each_key do |fav_team|
+            pods[round][top_seed][fav_team].each do |pod|
+              combo = pod.ensure_combination(pods, teams, highest_round)
+              if combo
+                combo.all_pods.each do |subpod|
+                  unless subpod.combination
+                    subpod.combination = combo
+                    combo.dependents << subpod
+                  end
+                end
+                combinations_in_use << combo
+              else
+                orphans << pod
+              end
+            end
+            puts "Orphans found: #{orphans.length}"
+            until orphans.empty?
+              dead_pod = orphans.shift
+              pods[dead_pod.round][dead_pod.favorite_seed][dead_pod.favorite_team].delete(dead_pod)
+              dead_pod.subpods.each do |subpod|
+                subpod.super_pods -= 1
+              end
+            end
+          end
+        end
+      end
+    end
+    ## Remove orphans
+
+
   else ## Else
     ## Remove pods with clashes
     ## Store these in a cache
@@ -171,3 +219,5 @@ end
     end
     puts "#{i}: #{count}"
   end
+
+  puts

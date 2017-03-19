@@ -29,8 +29,9 @@ Combination of pods that make of the four regions.  Possible combinations withou
   - [ ] If first of round
     - [x] Generate all possible pod matchups, minus clashes
       - [x] Add to appropriate trackers
-    - [ ] Reset all combinations
+    - [x] Reset all combinations
     - [ ] Find new combinations
+      - [ ] Add to list
 
   - [ ] Else
     - [ ] Find a combination with no clashes.  If it exists, limit has not been found.
