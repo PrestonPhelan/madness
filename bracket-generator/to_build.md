@@ -17,20 +17,20 @@ Possible matchups.  Checking for clashes within pod.
 ### Combinations
 Combination of pods that make of the four regions.  Possible combinations without repeating teams.  Built from that round's pods
   - [x] Built
-
+  - [ ] Accounts for 12-seed Play-ins
 
 ## Algorithm
 ### First Setup
   - [x] Create team objects
     - [x] Skip low rank-single bids
-  - [ ] 12-seed Play-in Pods
+  - [x] 12-seed Play-in Pods
 
 ### Iterate through matchups in order of probability
   - [ ] If first of round
-    - [ ] Generate all possible pod matchups, minus clashes
-      - [ ] Add to appropriate trackers
-    - [ ] Generate combinations from possible pods
-      - [ ] Add to appropriate trackers
+    - [x] Generate all possible pod matchups, minus clashes
+      - [x] Add to appropriate trackers
+    - [ ] Reset all combinations
+    - [ ] Find new combinations
 
   - [ ] Else
     - [ ] Find a combination with no clashes.  If it exists, limit has not been found.
