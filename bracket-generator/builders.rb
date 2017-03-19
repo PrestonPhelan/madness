@@ -13,8 +13,16 @@ class Set
 end
 
 def conflict?(pod1, pod2, clash_map, fav)
-  clash_map[fav].each do |ud|
-    return true if pod2.teams[ud].any? { |ud_team| ud_team.conference == pod1.teams[fav].first.conference }
+  pod1.teams.each_key do |seed1|
+    pod2.teams.each_key do |seed2|
+      fav, ud = [seed1, seed2].sort
+      next unless clash_map[fav] && clash_map[fav].include?(ud)
+      if pod1.teams[fav] && pod2.teams[ud]
+        return true if !(pod1.teams[fav].map(&:conference) & pod2.teams[ud].map(&:conference)).empty?
+      elsif pod1.teams[ud] && pod2.teams[fav]
+        return true if !(pod1.teams[ud].map(&:conference) & pod2.teams[fav].map(&:conference)).empty?
+      end
+    end
   end
   false
 end
@@ -103,17 +111,17 @@ def generate_rn_pods(pods, round, clashes)
 end
 
 def generate_r5_pods(pods)
-
+  result = Hash.new
+  
 end
 
 def get_cross_products(pods, fav, ud, clash_map, round)
   result = Hash.new { |h, k| h[k] = Set.new }
-  clash_check = clash_map.keys.include?(fav)
   pods[fav].each_key do |fav_team|
     pods[fav][fav_team].each do |pod1|
       pods[ud].each_key do |fav_team2|
         pods[ud][fav_team2].each do |pod2|
-          if clash_check && conflict?(pod1, pod2, clash_map, fav)
+          if conflict?(pod1, pod2, clash_map, fav)
             puts "Skipping #{pod1}, #{pod2}"
             next
           else

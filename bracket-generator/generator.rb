@@ -91,114 +91,114 @@ until limit_reached && p_limit_reached
     end
 
     puts "Passing #{clashes_to_check.length} clashes to generator function"
-    # byebug
     if highest_round == 4
+      byebug
       pods = generate_r5_pods(pods)
     else
       pods = generate_rn_pods(pods, highest_round + 1, clashes_to_check)
       print_counts(pods)
     end
-    byebug
-
-    ## Special case, pods for national semifinals
-    if highest_round == 4
-      pods[5] = Hash.new
-      pods[5][1] = Hash.new
-      0.upto(2) do |i|
-        team1 = teams[1][i]
-        pods[5][1][team1] = []
-        pods[4][1][team1].each do |pod1|
-          (i + 1).upto(3) do |j|
-            team2 = teams[1][j]
-            pods[4][1][team2].each do |pod2|
-              pods[5][1][team1] << Pod.new(pod1, pod2, 5)
-            end
-          end
-        end
-      end
-
-    ## Normal case
-    else
-      top_seeds = pods[highest_round].size / 2
-      this_round = highest_round + 1
-      puts "Building pods for round #{this_round}"
-      pods[this_round] = Hash.new
-      1.upto(top_seeds) do |top_seed|
-        # Generate pods for top_seed, which is combination of top_seed team
-        # and derived opposing seed.  Check against clash test
-        pods[this_round][top_seed] = Hash.new
-        opposing_seed = SEED_SUMS[this_round] - top_seed
-        pods[highest_round][top_seed].each_key do |team1|
-          pods[this_round][top_seed][team1] = []
-          pods[highest_round][top_seed][team1].each do |pod1|
-            pods[highest_round][opposing_seed].each_key do |team2|
-              next if team1.seed == clash.favorite && team2.seed == clash.underdog && team1.conference == team2.conference
-              pods[highest_round][opposing_seed][team2].each do |pod2|
-                pods[this_round][top_seed][team1] << Pod.new(pod1, pod2, this_round)
-              end
-            end
-          end
-        end
-      end
-      # pods[2][4].each_key do |team|
-      #   puts pods[2][4][team]
-      # end
-      pods[1].each_key do |seed|
-        pods[1][seed].each_key do |team|
-          pods[1][seed][team].each do |pod|
-            puts "#{pod} Superpods: #{pod.super_pods}"
-          end
-        end
-      end
-    end
-
-    ## Reset all combinations in pods to nil
-    0.upto(highest_round) do |round|
-      pods[round].each_key do |k1|
-        pods[round][k1].each_key do |k2|
-          pods[round][k1][k2].each do |pod|
-            pod.combination = nil
-          end
-        end
-      end
-    end
-    combinations_in_use = []
-
-    ## Advance highest roud
     highest_round += 1
 
-    ## Generate new combinations
-    if highest_round >= 2
-      highest_round.downto(1) do |round|
-        pods[round].each_key do |top_seed|
-          pods[round][top_seed].each_key do |fav_team|
-            pods[round][top_seed][fav_team].each do |pod|
-              combo = pod.ensure_combination(pods, teams, highest_round)
-              if combo
-                combo.all_pods.each do |subpod|
-                  unless subpod.combination
-                    subpod.combination = combo
-                    combo.dependents << subpod
-                  end
-                end
-                combinations_in_use << combo
-              else
-                orphans << pod
-              end
-            end
-            until orphans.empty?
-              puts "Orphans found: #{orphans.length}"
-              dead_pod = orphans.shift
-              dead_pod.remove_from(pods)
-            end
-          end
-        end
-      end
-    end
+    # ## Special case, pods for national semifinals
+    # if highest_round == 4
+    #   pods[5] = Hash.new
+    #   pods[5][1] = Hash.new
+    #   0.upto(2) do |i|
+    #     team1 = teams[1][i]
+    #     pods[5][1][team1] = []
+    #     pods[4][1][team1].each do |pod1|
+    #       (i + 1).upto(3) do |j|
+    #         team2 = teams[1][j]
+    #         pods[4][1][team2].each do |pod2|
+    #           pods[5][1][team1] << Pod.new(pod1, pod2, 5)
+    #         end
+    #       end
+    #     end
+    #   end
+    #
+    # ## Normal case
+    # else
+    #   top_seeds = pods[highest_round].size / 2
+    #   this_round = highest_round + 1
+    #   puts "Building pods for round #{this_round}"
+    #   pods[this_round] = Hash.new
+    #   1.upto(top_seeds) do |top_seed|
+    #     # Generate pods for top_seed, which is combination of top_seed team
+    #     # and derived opposing seed.  Check against clash test
+    #     pods[this_round][top_seed] = Hash.new
+    #     opposing_seed = SEED_SUMS[this_round] - top_seed
+    #     pods[highest_round][top_seed].each_key do |team1|
+    #       pods[this_round][top_seed][team1] = []
+    #       pods[highest_round][top_seed][team1].each do |pod1|
+    #         pods[highest_round][opposing_seed].each_key do |team2|
+    #           next if team1.seed == clash.favorite && team2.seed == clash.underdog && team1.conference == team2.conference
+    #           pods[highest_round][opposing_seed][team2].each do |pod2|
+    #             pods[this_round][top_seed][team1] << Pod.new(pod1, pod2, this_round)
+    #           end
+    #         end
+    #       end
+    #     end
+    #   end
+    #   # pods[2][4].each_key do |team|
+    #   #   puts pods[2][4][team]
+    #   # end
+    #   pods[1].each_key do |seed|
+    #     pods[1][seed].each_key do |team|
+    #       pods[1][seed][team].each do |pod|
+    #         puts "#{pod} Superpods: #{pod.super_pods}"
+    #       end
+    #     end
+    #   end
+    # end
+    #
+    # ## Reset all combinations in pods to nil
+    # 0.upto(highest_round) do |round|
+    #   pods[round].each_key do |k1|
+    #     pods[round][k1].each_key do |k2|
+    #       pods[round][k1][k2].each do |pod|
+    #         pod.combination = nil
+    #       end
+    #     end
+    #   end
+    # end
+    # combinations_in_use = []
+    #
+    # ## Advance highest roud
+    # highest_round += 1
+    #
+    # ## Generate new combinations
+    # if highest_round >= 2
+    #   highest_round.downto(1) do |round|
+    #     pods[round].each_key do |top_seed|
+    #       pods[round][top_seed].each_key do |fav_team|
+    #         pods[round][top_seed][fav_team].each do |pod|
+    #           combo = pod.ensure_combination(pods, teams, highest_round)
+    #           if combo
+    #             combo.all_pods.each do |subpod|
+    #               unless subpod.combination
+    #                 subpod.combination = combo
+    #                 combo.dependents << subpod
+    #               end
+    #             end
+    #             combinations_in_use << combo
+    #           else
+    #             orphans << pod
+    #           end
+    #         end
+    #         until orphans.empty?
+    #           puts "Orphans found: #{orphans.length}"
+    #           dead_pod = orphans.shift
+    #           dead_pod.remove_from(pods)
+    #         end
+    #       end
+    #     end
+    #   end
+    # end
     ## Remove orphans
 
-
   else ## Else
+    byebug
     ## Remove pods with clashes
     pods[clash.round][clash.top_seed].each_key do |fav_team|
       puts "Pods to search: #{pods[clash.round][clash.top_seed][fav_team].size}"
@@ -287,16 +287,16 @@ until limit_reached && p_limit_reached
     ## Re-add pods from cache
     ## Break loop
   ## Else reset cache to empty
-  if highest_round > 1
-    teams.each_key do |seed|
-      teams[seed].each do |team|
-        unless team_in_use?(team, combinations_in_use)
-          limit_reached = true
-          break
-        end
-      end
-    end
-  end
+  # if highest_round > 1
+  #   teams.each_key do |seed|
+  #     teams[seed].each do |team|
+  #       unless team_in_use?(team, combinations_in_use)
+  #         limit_reached = true
+  #         break
+  #       end
+  #     end
+  #   end
+  # end
 end
 
 puts highest_round
