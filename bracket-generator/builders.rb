@@ -2,6 +2,24 @@ require 'set'
 
 require_relative './pod.rb'
 
+class Set
+  def to_s
+    result = ""
+    self.each do |el|
+      result += el.to_s + ", "
+    end
+    result[0...-2]
+  end
+end
+
+def generate_clash_map(clashes)
+  result = Hash.new { |h, k| h[k] = Set.new }
+  clashes.each do |clash|
+    result[clash.favorite] << clash.underdog
+  end
+  result
+end
+
 def generate_playin_pods(teams)
   result = Hash.new
   result[12] = Hash.new
@@ -18,14 +36,6 @@ def generate_playin_pods(teams)
   end
 
   result
-end
-
-def generate_pods(pods, round)
-  if round == 5
-    generate_r5_pods(pods)
-  else
-    generate_rn_pods(pods, round)
-  end
 end
 
 def generate_r1_pods(teams, pods)
@@ -71,8 +81,9 @@ def generate_r1_pods(teams, pods)
   result
 end
 
-def generate_rn_pods(pods, round)
-
+def generate_rn_pods(pods, round, clashes)
+  clash_map = generate_clash_map(clashes)
+  byebug
 end
 
 def generate_r5_pods(pods)

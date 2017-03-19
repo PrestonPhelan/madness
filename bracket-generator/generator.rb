@@ -36,74 +36,71 @@ print_counts(pods)
 pods = generate_r1_pods(teams, pods)
 print_counts(pods)
 
-byebug
-
-### PHASE 3 - ITERATE THROUGH CLASHES ###
 ## Initialize iteration variables
 limit_reached = false
-highest_round = 0
+p_limit_reached = false
+highest_round = 1
+clashes_checked = 0
 # combinations_in_use = []
 # orphans = []
 # conflict_pods = []
 # combinations_to_remove = []
-# clashes_checked = 0
 
-until limit_reached
-# 6.times do
+### PHASE 3 - ITERATE THROUGH CLASHES ###
+# Iterate until no possible combinations avoid the clash & you're reached matchups
+# with a less than 5% chance of happening
+until limit_reached && p_limit_reached
+# 3.times do
+
   ## Read next clash
   clash = clashes.shift
   clashes_checked += 1
   puts "Check number #{clashes_checked}: #{clash}"
+  if clash.chance < 0.05 && !p_limit_reached
+    puts "Reached 5% threshold"
+    p_limit_reached = true
+  end
 
+  # Skip round 1 conflicts
+  if clash.round == 1
+    puts "Skipping round 1 conflict"
+    next
+  end
   ## Skip if there are no conflicts
-  unless clash.count_conflicts(teams) > 0
+  if clash.count_conflicts(teams) == 0
     puts "No conflicts in #{clash}"
     next
   end
 
   ## Check if pushing up highest_round
   if clash.round > highest_round
-    pods = generate_pods(pods, highest_round + 1)
-    if highest_round == 0
-      pods[1] = Hash.new
-      1.upto(8) do |i|
-        pods[1][i] = Hash.new
-      end
+    puts "Building pods for round #{highest_round + 1}"
 
-      1.upto(4) do |i|
-        teams[i].each do |team|
-          pods[1][i][team] = []
-          pods[1][i][team] << Pod.new(team, nil, 1)
-        end
+    # Grab all clashes from that round that are coming next
+    clashes_to_check = Set.new
+    clashes_to_check << clash
+    until clashes.first.round != clash.round
+      next_clash = clashes.shift
+      clashes_checked += 1
+      if next_clash.count_conflicts(teams) == 0
+        puts "No conflicts for #{next_clash}"
+        next
       end
+      puts "Also checking #{next_clash}"
+      clashes_to_check << next_clash
+    end
 
-      teams[5].each do |team|
-        pods[1][5][team] = []
-        pods[0][12].each_key do |team2|
-          pods[0][12][team2].each do |pod|
-            # next if pod.teams.any? { |team3| team3.conference == team.conference }
-            pods[1][5][team] << Pod.new(team, pod, 1)
-          end
-        end
-        pods[1][5][team] << Pod.new(team, nil, 1)
-      end
-
-      # pods[1][5].each_key do |team|
-      #   puts pods[1][5][team]
-      # end
-
-      6.upto(8) do |i|
-        teams[i].each do |team1|
-          pods[1][i][team1] = []
-          teams[17 - i].each do |team2|
-            next if team1.conference == team2.conference
-            pods[1][i][team1] << Pod.new(team1, team2, 1)
-          end
-        end
-      end
+    puts "Passing #{clashes_to_check.length} clashes to generator function"
+    # byebug
+    if highest_round == 4
+      pods = generate_r5_pods(pods)
+    else
+      pods = generate_rn_pods(pods, highest_round + 1, clashes_to_check)
+    end
+    pods = generate_pods(pods, highest_round + 1, clashes_to_check)
 
     ## Special case, pods for national semifinals
-    elsif highest_round == 4
+    if highest_round == 4
       pods[5] = Hash.new
       pods[5][1] = Hash.new
       0.upto(2) do |i|
@@ -283,14 +280,6 @@ until limit_reached
   end
   ## End
 
-  1.upto(8) do |i|
-    count = 0
-    pods[1][i].each do |_, value|
-      count += value.size
-    end
-    puts "#{i}: #{count}"
-  end
-
 
   ## Ensure combinations for each remaining pod
   ## If cannot find a combination, limit has been reached
@@ -298,14 +287,6 @@ until limit_reached
     ## Break loop
   ## Else reset cache to empty
   if highest_round > 1
-    1.upto(4) do |i|
-      count = 0
-      pods[2][i].each do |_, value|
-        count += value.size
-      end
-      puts "#{i}: #{count}"
-    end
-
     teams.each_key do |seed|
       teams[seed].each do |team|
         unless team_in_use?(team, combinations_in_use)
