@@ -18,6 +18,10 @@ class Pod
 
     @teams = get_teams
     @subpods = get_subpods
+    @subpods.each do |subpod|
+      next if subpod == self
+      subpod.super_pods += 1
+    end
   end
 
   def conflict?(pod)
@@ -25,16 +29,27 @@ class Pod
       next if i > 12
       if i < 12
         if pod.teams[i] && @teams[i] == pod.teams[i]
-          "Conflict with #{@teams[i]}"
+          # puts "Conflict with #{@teams[i].map(&:name)} & #{pod.teams[i].map(&:name)}"
           return true
         end
       else
         next unless @teams[i] && pod.teams[i]
-        puts "Looking for 12 seed conflict"
-        return true if @teams[i].any? { |team| pod.teams[i].includes?(team) }
+        # puts "Looking for 12 seed conflict"
+        # puts @teams[i].class
+        # puts pod.teams[i]
+        return true if !(@teams[i] & pod.teams[i]).empty?
       end
     end
     false
+  end
+
+  def remove_from(pods)
+    puts "Removing #{self}"
+    pods[@round][@favorite_seed][@favorite_team].delete(self)
+    @subpods.each do |subpod|
+      subpod.super_pods -= 1
+      puts "#{subpod} Superpods: #{subpod.super_pods}"
+    end
   end
 
   def ensure_combination(pods, teams, round)
@@ -82,7 +97,7 @@ class Pod
             end
           end
         end
-        puts "End of "
+        # puts "End of "
       end
     end
     puts "None found for #{self}"
@@ -93,7 +108,6 @@ class Pod
     pods[5][1].each_key do |fav_team|
       pods[5][1][fav_team].each do |pod|
         next unless pod.subpods.include?(self)
-        pod_teams = pod.teams[0].values + pod.teams[1].values
         pods[5][1].each_key do |fav_team2|
           next if pod[teams][0][1] == fav_team2 || pod[teams][1][1] == fav_team2
           pods[5][1][fav_team2].each do |pod2|
@@ -126,16 +140,17 @@ class Pod
     if @round == 0
       hash[12] = [@upper, @lower]
     elsif @round == 1
-      hash[@favorite_seed] = @upper
+      hash[@favorite_seed] = [@upper]
       if @favorite_seed == 5
-        hash[12] = @lower ? @lower.teams : nil
+        hash[12] = @lower ? @lower.teams[12] : nil
       else
-        hash[17 - @favorite_seed] = @lower
+        hash[17 - @favorite_seed] = [@lower]
       end
     elsif @round < 5
-      @upper.teams.merge(@lower.teams)
+      # puts "Getting mid-round teams..."
+      return @upper.teams.merge(@lower.teams)
     else
-      [@upper.teams, @lower.teams]
+      return [@upper.teams, @lower.teams]
     end
     hash
   end
