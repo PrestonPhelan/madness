@@ -12,13 +12,20 @@ end
 
 def print_counts(pods)
   puts 'Current counts'
-  pods.each_key do |fav_seed|
-    count = 0
-    pods[fav_seed].each_key do |fav_team|
-      count += pods[fav_seed][fav_team].size
+  if pods.keys.length > 1 || pods[12]
+    pods.each_key do |fav_seed|
+      count = 0
+      pods[fav_seed].each_key do |fav_team|
+        count += pods[fav_seed][fav_team].size
+      end
+      puts "#{fav_seed}: #{count}"
     end
-    puts "#{fav_seed}: #{count}"
+  else
+    pods[1].each_key do |team|
+      puts "#{team}: #{pods[1][team].size}"
+    end
   end
+  true
 end
 
 def team_in_use?(team, search_combos)

@@ -2,6 +2,7 @@ require_relative './team.rb'
 require_relative './clash.rb'
 require_relative './pod.rb'
 require_relative './builders.rb'
+require_relative './combiners.rb'
 require_relative './util.rb'
 require 'byebug'
 
@@ -37,10 +38,14 @@ pods = generate_r1_pods(teams, pods)
 print_counts(pods)
 
 ## Initialize iteration variables
-limit_reached = false
-p_limit_reached = false
-highest_round = 1
-clashes_checked = 0
+
+limit_reached = false ## Reached a clash that cannot be avoided
+p_limit_reached = false ## Want to include all conflicts that have a >5% chance of happening
+highest_round = 1 ## Counter to show how many rounds we've built so far
+clashes_checked = 0 ## Counter to track how far down the list we've gone
+r5_clashes = Hash.new ## Store Round 5 clashes and check against them instead of building ridiculus number of pods
+removed_pods = Set.new ## Cache for re-adding pods if they break all combinations
+valid_combo = nil ## Store valid_combination, resets to nil if one of it's pods is removed
 # combinations_in_use = []
 # orphans = []
 # conflict_pods = []
@@ -74,27 +79,31 @@ until limit_reached && p_limit_reached
 
   ## Check if pushing up highest_round
   if clash.round > highest_round
-    puts "Building pods for round #{highest_round + 1}"
 
-    # Grab all clashes from that round that are coming next
-    clashes_to_check = Set.new
-    clashes_to_check << clash
-    until clashes.first.round != clash.round
-      next_clash = clashes.shift
-      clashes_checked += 1
-      if next_clash.count_conflicts(teams) == 0
-        puts "No conflicts for #{next_clash}"
-        next
-      end
-      puts "Also checking #{next_clash}"
-      clashes_to_check << next_clash
-    end
-
-    puts "Passing #{clashes_to_check.length} clashes to generator function"
+    ## If it's a round 5 game, add to r5_clashes hash and check for combinations
     if highest_round == 4
+      puts "Checking for combinations for #{clash}"
+      r5_clashes[clash.favorite] = clash.underdog
+      valid_combo ||= check_combination(pods, r5_clashes)
+      limit_reached = true if valid_combo.nil?
+      puts "Warning: no combinations found for #{clash}" if valid_combo.nil?
       byebug
-      pods = generate_r5_pods(pods)
     else
+      puts "Building pods for round #{highest_round + 1}"
+      # Grab all clashes from that round that are coming next
+      clashes_to_check = Set.new
+      clashes_to_check << clash
+      until clashes.first.round != clash.round
+        next_clash = clashes.shift
+        clashes_checked += 1
+        if next_clash.count_conflicts(teams) == 0
+          puts "No conflicts for #{next_clash}"
+          next
+        end
+        puts "Also checking #{next_clash}"
+        clashes_to_check << next_clash
+      end
+      puts "Passing #{clashes_to_check.length} clashes to generator function"
       pods = generate_rn_pods(pods, highest_round + 1, clashes_to_check)
       print_counts(pods)
     end
@@ -302,5 +311,5 @@ end
 puts highest_round
 
 
-puts "Combinations in use: #{combinations_in_use.length}"
+# puts "Combinations in use: #{combinations_in_use.length}"
 puts "Clashes checked: #{clashes_checked}"

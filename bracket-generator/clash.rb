@@ -32,7 +32,7 @@ class Clash
         teams[@underdog].each do |team2|
           count += 1 if team1.conference == team2.conference
         end
-      end
+      en
     end
     count
   end

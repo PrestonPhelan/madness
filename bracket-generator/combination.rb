@@ -6,7 +6,7 @@ class Combination
     @round = round
     @top_seed = top_seed
     @pods = pods
-    @all_pods = get_all_pods
+    # @all_pods = get_all_pods
     @dependents = []
   end
 
