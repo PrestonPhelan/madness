@@ -2,6 +2,7 @@
 # Read data from CSV
 require_relative './team.rb' # Team.create_all
 require_relative './clash.rb' # Clash.add_all
+require_relative './conference.rb' # Conference.new
 
 teams = Team.create_all('../team_info.csv')
 clashes = Clash.add_all('../matchup_rate.csv')
@@ -9,8 +10,24 @@ clashes = Clash.add_all('../matchup_rate.csv')
 
 ### PHASE 2 - CREATION OF OBJECTS ###
 ## Create Conference Objects
+conferences = Hash.new
+
+teams.each do |_, team_list|
+  team_list.each do |team|
+    conferences[team.conference] = Conference.new(team.conference) unless conferences[team.conference]
+    conferences[team.conference].add(team)
+  end
+end
+
+conferences.each do |_, conference|
+  conference.get_seeds
+end
+
+conference_values = conferences.values.sort { |x, y| y.count <=> x.count }
+
 
 ## Create Conference Combinations
+
 
 
 ### PHASE 3 - INITIAL REDUCTION ###
@@ -25,6 +42,7 @@ clashes = Clash.add_all('../matchup_rate.csv')
   ## Check if a combination works with conference combinations
   ## If not, re-add lowest frequency clashes
   ## Try again
+  ## Possibly store checked combinations? But how?
 
 ### PHASE 5 - FOUND SETUP THAT WORKS ###
   ## Generate all combinations of this setup
