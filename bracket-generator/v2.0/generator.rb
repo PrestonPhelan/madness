@@ -57,9 +57,33 @@ conferences_by_team_count.each do |conference|
 end
 
 ### PHASE 4 - FIND COMBINATION THAT WORKS ###
+combination_found = false
+i = clashes.length - 1
+until combination_found
   ## Check if a combination works with conference combinations
-  ## If not, re-add lowest frequency clashes
+  bracket = find_combination(conferences_by_team_count)
+  if bracket
+    sample, count = bracket
+    combination_found = true
+  else
+    # debugger
+    ## If not, re-add lowest frequency clashes
+    puts "Removing clash #{clashes[i]}"
+    conferences_by_team_count.each do |conference|
+      conference.remove_restriction(clashes[i])
+    end
+    i -= 1
+  end
   ## Try again
+end
+
+puts "Found #{count} possible combinations"
+sample.each do |region, seed_hash|
+  puts "*************REGION #{region}******************"
+  seed_hash.each do |seed, conference|
+    puts "#{seed}: #{conference}"
+  end
+end
   ## Possibly store checked combinations? But how?
 
 ### PHASE 5 - FOUND SETUP THAT WORKS ###

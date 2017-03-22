@@ -134,6 +134,13 @@ class Conference
     end
   end
 
+  def remove_restriction(clash)
+    return unless @removed[clash]
+    @removed[clash].each do |combination|
+      @combinations << combination
+    end
+  end
+
   def to_s
     "#{@name} - #{count} teams"
   end
