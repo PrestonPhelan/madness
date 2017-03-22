@@ -9,7 +9,7 @@ clashes = Clash.add_all('../matchup_rate.csv')
 
 
 ### PHASE 2 - CREATION OF OBJECTS ###
-## Create Conference Objects
+## Create Conference Objects ##
 conferences = Hash.new
 
 teams.each do |_, team_list|
@@ -26,26 +26,35 @@ end
 conferences_by_team_count = conferences.values.sort { |x, y| y.count <=> x.count }
 
 
-## Create Conference Combinations
-  ## For each conference
+## Create Conference Combinations ##
+## For each conference
+conferences_by_team_count.each do |conference|
     ## Generate all possible distributions
     ## Top seed is always region1
     ## No teams placed in region4 until a team is placed in region3
-conferences_by_team_count.each do |conference|
   conference.generate_all_distributions
 end
 
-# TODO Remove these
-# puts conferences_by_team_count.map { |conference| "#{conference.name} has #{conference.combinations.size} distributions" }
-# conferences_by_team_count[6].combinations.each(&:print)
+
+
+
 
 ### PHASE 3 - INITIAL REDUCTION ###
 ## For each conference
+conferences_by_team_count.each do |conference|
   ## Move through clashes
+  conference.reduce_combinations(clashes)
   ## Remove combinations from its possible combination list
   ## Store these removed items in a hash pointing to the clash where it was removed
   ## Continue until one remaining, or all clashes considered
+end
 
+# TODO Remove these
+puts conferences_by_team_count.map { |conference| "#{conference.name} has #{conference.combinations.size} distributions" }
+conferences_by_team_count.each do |conference|
+  puts conference.name
+  conference.combinations.each(&:print)
+end
 
 ### PHASE 4 - FIND COMBINATION THAT WORKS ###
   ## Check if a combination works with conference combinations
