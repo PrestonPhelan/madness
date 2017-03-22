@@ -23,12 +23,21 @@ conferences.each do |_, conference|
   conference.get_seeds
 end
 
-conference_values = conferences.values.sort { |x, y| y.count <=> x.count }
+conferences_by_team_count = conferences.values.sort { |x, y| y.count <=> x.count }
 
 
 ## Create Conference Combinations
+  ## For each conference
+    ## Generate all possible distributions
+    ## Top seed is always region1
+    ## No teams placed in region4 until a team is placed in region3
+conferences_by_team_count.each do |conference|
+  conference.generate_all_distributions
+end
 
-
+# TODO Remove these
+# puts conferences_by_team_count.map { |conference| "#{conference.name} has #{conference.combinations.size} distributions" }
+# conferences_by_team_count[6].combinations.each(&:print)
 
 ### PHASE 3 - INITIAL REDUCTION ###
 ## For each conference
