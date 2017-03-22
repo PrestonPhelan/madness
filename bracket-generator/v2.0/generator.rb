@@ -4,7 +4,7 @@ require_relative './team.rb' # Team.create_all
 require_relative './clash.rb' # Clash.add_all
 require_relative './conference.rb' # Conference.new
 
-teams = Team.create_all('../team_info.csv')
+teams = Team.create_all('../official_team_info.csv')
 clashes = Clash.add_all('../matchup_rate.csv')
 
 
@@ -62,7 +62,7 @@ i = clashes.length - 1
 until combination_found
   ## Check if a combination works with conference combinations
   bracket = find_combination(conferences_by_team_count)
-  if bracket
+  if bracket && correct_11s?(bracket[0])
     sample, count = bracket
     combination_found = true
   else

@@ -96,15 +96,15 @@ def fit?(combination_region, bracket, reg_num)
   # Returns true if there are no conflicts
   # combination_region is list of seeds
   combination_region.each do |seed_num|
-    if seed_num < 12
+    if seed_num < 11
       # puts bracket
       return false if bracket[reg_num][seed_num] && !bracket[reg_num][seed_num].empty?
     else
-      return false if bracket[reg_num][12] && bracket[reg_num][12].size == 2
+      return false if bracket[reg_num][11] && bracket[reg_num][11].size == 2
       count = 0
       bracket.each do |reg, _|
         next if reg == reg_num
-        count += 1 if bracket[reg][12] && !bracket[reg][12].empty?
+        count += 1 if bracket[reg][11] && bracket[reg][11].size == 2
       end
       return false if count == 2
       raise "12 seeds too spread out!" if count > 2
@@ -159,8 +159,10 @@ def find_combination(conferences)
     end
 
     built_bracket = build_bracket(bracket, conferences[1..-1])
-    count += 1 if built_bracket
-    latest_built = built_bracket if built_bracket
+    if built_bracket && correct_11s?(built_bracket)
+      count += 1
+      latest_built = built_bracket
+    end
   end
   return nil if count == 0
   [latest_built, count]
@@ -174,7 +176,7 @@ def dup_bracket(bracket)
     4 => Hash.new
   }
   result.each do |_, seed_map|
-    1.upto(12) do |i|
+    1.upto(11) do |i|
       seed_map[i] = Array.new
     end
   end
@@ -188,4 +190,14 @@ def dup_bracket(bracket)
   end
 
   result
+end
+
+def correct_11s?(bracket)
+  puts bracket
+  bracket.each do |reg, seed_list|
+    elevens = seed_list[11]
+    return false if elevens.size == 1 && (elevens.first == "Pac-12" || elevens.first == "ACC" || elevens.first == "Big 12")
+    return false if elevens.size == 2 && elevens.include?("A10")
+  end
+  true
 end

@@ -62,25 +62,48 @@ class Conference
 
   def generate_all_distributions
     seed_nums = @seeds.keys.sort
-    raise if @seeds[seed_nums.first] > 1
     first_num = seed_nums.first
-    regions = {
-      1 => [first_num],
-      2 => [],
-      3 => [],
-      4 => []
-    }
-    if @seeds.size > 1
-      build_distribution(@seeds.reject { |k, _| k == first_num }, regions)
+    if @seeds[first_num] > 1
+      2.upto(4) do |i|
+        regions = {
+          1 => [first_num],
+          2 => [],
+          3 => [],
+          4 => []
+        }
+        regions[i] = [first_num]
+        if @seeds.size > 1
+          build_distribution(@seeds.reject { |k, _| k == first_num }, regions)
+        else
+          @combinations << ConferenceDistribution.new(
+          @name,
+          [
+            regions[1],
+            regions[2],
+            regions[3],
+            regions[4]
+            ])
+        end
+      end
     else
-      @combinations << ConferenceDistribution.new(
-      @name,
-      [
-        regions[1],
-        regions[2],
-        regions[3],
-        regions[4]
-        ])
+      regions = {
+        1 => [first_num],
+        2 => [],
+        3 => [],
+        4 => []
+      }
+      if @seeds.size > 1
+        build_distribution(@seeds.reject { |k, _| k == first_num }, regions)
+      else
+        @combinations << ConferenceDistribution.new(
+        @name,
+        [
+          regions[1],
+          regions[2],
+          regions[3],
+          regions[4]
+          ])
+      end
     end
   end
 
