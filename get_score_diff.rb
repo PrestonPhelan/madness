@@ -2,13 +2,14 @@ def get_score(z_score, favorite, underdog)
   fav_rat, fav_ppg = favorite
   ud_rat, ud_ppg = underdog
   score_diff = score_diff(z_score, fav_rat, ud_rat).round
-  puts score_diff
+  puts "Score diff should be #{score_diff}"
   nat_dif = fav_ppg.round - ud_ppg.round
   adj_needed = (score_diff - nat_dif).floor
   boost = rand(20) - 10
-  puts "Favorite Score: #{fav_ppg.round + adj_needed / 2 + boost}"
-  puts "Underdog Score: #{ud_ppg.round - adj_needed / 2 + boost}"
-  puts "Boost was #{boost}"
+  # puts "Favorite Score: #{fav_ppg.round + adj_needed / 2 + boost}"
+  # puts "Underdog Score: #{ud_ppg.round - adj_needed / 2 + boost}"
+  # puts "Boost was #{boost}"
+  [fav_ppg.round + adj_needed / 2 + boost, ud_ppg.round - adj_needed / 2 + boost, score_diff]
 end
 
 def score_diff(z_score, fav_rat, ud_rat)

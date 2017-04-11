@@ -40,21 +40,27 @@ def win_probability(favorite, underdog)
   p_fav_win = Distribution::Normal.cdf(z_score)
 
   result = rand
+  winner = result <= p_fav_win ? fav_name : ud_name
 
-  if result <= p_fav_win
-    puts "#{fav_name} defeats #{ud_name}"
-  else
-    puts "#{ud_name} upsets #{fav_name}!"
-  end
-  puts "Result was #{result}"
-  puts "Probability of favorite win was #{p_fav_win}"
-  result
+  # if result <= p_fav_win
+    # puts "#{fav_name} defeats #{ud_name}"
+  # else
+    # puts "#{ud_name} upsets #{fav_name}!"
+  # end
+  # puts "Result was #{result}"
+  # puts "Probability of favorite win was #{p_fav_win}"
+  [result, winner]
 end
 
 def sim(team1, team2)
-  p_value = win_probability(team1[0..1], team2[0..1])
+  p_value, winner = win_probability(team1[0..1], team2[0..1])
   z_score = Distribution::Normal.p_value(p_value)
-  puts get_score(z_score, team1[1..2], team2[1..2])
+  fav_score, ud_score, exp_diff = get_score(z_score * -1, team1[1..2], team2[1..2])
+  fav_score += 1 unless exp_diff == fav_score - ud_score
+  puts "***RESULT***"
+  puts "#{team1[0]}: #{fav_score}"
+  puts "#{team2[0]}: #{ud_score}"
+  puts "(#{winner} wins)"
 end
 #
 # favorite = ["Air Force", 60.77, 71.5]
