@@ -56,10 +56,30 @@ def sim(team1, team2)
   z_score = Distribution::Normal.p_value(p_value)
   puts get_score(z_score, team1[1..2], team2[1..2])
 end
+#
+# favorite = ["Air Force", 60.77, 71.5]
+# underdog = ["Jacksonville", 57.07, 74.6]
 
-favorite = ["Air Force", 60.77, 71.5]
-underdog = ["Jacksonville", 57.07, 74.6]
+favorite = nil
+underdog = nil
+while true
+  puts "Enter favorite name"
+  fav_name = gets.chomp
+  puts "Enter favorite rating"
+  fav_rat = gets.chomp.to_f
+  puts "Enter favorite points per game"
+  fav_ppg = gets.chomp.to_f
+  puts "Enter underdog name"
+  ud_name = gets.chomp
+  puts "Enter underdog rating"
+  ud_rat = gets.chomp.to_f
+  puts "Enter underdog points per game"
+  ud_ppg = gets.chomp.to_f
 
-sim(favorite, underdog)
+  favorite = [fav_name, fav_rat, fav_ppg]
+  underdog = [ud_name, ud_rat, ud_ppg]
+
+  sim(favorite, underdog)
+end
 
 # win_probability(["Air Force", 60.77], ["Jacksonville", 57.07])
